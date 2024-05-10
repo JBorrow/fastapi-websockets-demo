@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Simple Demo | Lots of Requests, HTTP</title>
+    </head>
+    <body>
+        <div>
+            <input
+                type="submit"
+                value="Begin the Madness"
+                onclick="myFunction()"
+            />
+        </div>
+        <div id="images"></div>
+        <script>
+            function createImage(R, G, B) {
+                var image_container = document.getElementById("images");
+                var image = document.createElement("img");
+                image.src = `http://localhost:12345/http/tile.png?R=${R}&G=${G}&B=${B}`;
+                image_container.appendChild(image);
+                return;
+            }
+
+            function myFunction() {
+                for (var i = 0; i < 1024; i++) {
+                    var R = Math.random() * 255;
+                    var G = Math.random() * 255;
+                    var B = Math.random() * 255;
+
+                    /* We now make the underlying HTTP/1.1 requests */
+                    createImage(R, G, B);
+                }
+
+                return;
+            }
+        </script>
+    </body>
+</html>

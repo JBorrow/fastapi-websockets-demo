@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Simple Demo | Lots of Requests, WS</title>
+    </head>
+    <body>
+        <div>
+            <input
+                type="submit"
+                value="Begin the Madness"
+                onclick="myFunction()"
+            />
+        </div>
+        <div id="images"></div>
+        <script>
+            var ws = new WebSocket("ws://localhost:12345/ws");
+
+            ws.onopen = function () {
+                console.log("Connected to the server");
+            };
+
+            ws.onmessage = function (event) {
+                /* This should be a data URL for the image element, or it could be an error. */
+                var result = JSON.parse(event.data);
+
+                if (result.error) {
+                    console.error(result.error);
+                    return;
+                }
+
+                if (result.image) {
+                    var image_container = document.getElementById("images");
+                    var image = document.createElement("img");
+                    image.src = result.image;
+                    image_container.appendChild(image);
+                    return;
+                }
+
+                console.error("Unknown message received: ", result);
+            };
+
+            function myFunction() {
+                for (var i = 0; i < 1024; i++) {
+                    var R = Math.random() * 255;
+                    var G = Math.random() * 255;
+                    var B = Math.random() * 255;
+
+                    /* We now make a request to the websocket */
+                    ws.send(JSON.stringify({ R: R, G: G, B: B }));
+                }
+
+                return;
+            }
+        </script>
+    </body>
+</html>
